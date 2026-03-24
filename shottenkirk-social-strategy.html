@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Media Playbook — Shottenkirk Toyota</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8232A;
+    --dark: #0D0D0D;
+    --mid: #1A1A1A;
+    --card: #1F1F1F;
+    --border: #2E2E2E;
+    --gold: #F5C842;
+    --white: #F0EDE8;
+    --muted: #888;
+    --green: #3DCA7A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 60px 32px 48px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(232,35,42,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 10vw, 88px);
+    line-height: 0.92;
+    letter-spacing: 1px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--red); }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-top: 16px;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+  .badge.tiktok { color: #69C9D0; border-color: #69C9D020; background: #69C9D010; }
+  .badge.youtube { color: #FF3E3E; border-color: #FF3E3E20; background: #FF3E3E10; }
+  .badge.fb { color: #748FFC; border-color: #748FFC20; background: #748FFC10; }
+  .badge.email { color: var(--gold); border-color: #F5C84220; background: #F5C84210; }
+
+  /* SECTIONS */
+  .section {
+    padding: 48px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    color: var(--border);
+    flex-shrink: 0;
+    letter-spacing: 2px;
+  }
+  .section-title-block {}
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 1.5px;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    border-color: var(--red);
+    transform: translateY(-2px);
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--red);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .card:hover::after { opacity: 1; }
+  .card-icon { font-size: 22px; margin-bottom: 10px; }
+  .card-title {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .card-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .card-tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* TOOL STACK */
+  .tool-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 520px) { .tool-row { grid-template-columns: 1fr; } }
+  .tool-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tool-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-top: 5px;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px var(--green);
+  }
+  .tool-name {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .tool-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .tool-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    margin-top: 6px;
+  }
+
+  /* CONTENT CALENDAR */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  @media (max-width: 600px) {
+    .calendar-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .cal-day {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .cal-day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cal-type {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .cal-day.hot { border-color: var(--red); }
+  .cal-day.hot .cal-type { color: var(--red); }
+  .cal-day.gold { border-color: var(--gold); }
+  .cal-day.gold .cal-type { color: var(--gold); }
+
+  /* HOOK TEMPLATES */
+  .hook-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .hook-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 0 4px 4px 0;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: var(--white);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .hook-item strong {
+    color: var(--gold);
+    font-style: normal;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* METRICS */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .metric-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    color: var(--red);
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+  .metric-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* LEGAL */
+  .legal-box {
+    background: #1A1510;
+    border: 1px solid #3D2E00;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+  }
+  .legal-icon { font-size: 20px; flex-shrink: 0; }
+  .legal-text { font-size: 13px; color: #C9A84C; line-height: 1.7; }
+  .legal-text strong { color: var(--gold); }
+
+  /* PHASE TIMELINE */
+  .phases {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .phases::before {
+    content: '';
+    position: absolute;
+    left: 19px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .phase {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 28px;
+    position: relative;
+  }
+  .phase-dot {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 2px solid var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--red);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .phase-content {}
+  .phase-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .phase-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .phase-tasks {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .phase-tasks li {
+    font-size: 13px;
+    color: var(--muted);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .phase-tasks li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--border);
+    font-size: 11px;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 32px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--border);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .footer span { color: var(--red); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    margin: 0 32px;
+    opacity: 0.4;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero reveal">
+  <div class="hero-label">DTE Solutions · Social Media Playbook</div>
+  <h1>SELL MORE.<br><span>POST SMARTER.</span></h1>
+  <p class="hero-sub">A zero-to-presence growth strategy for Shottenkirk Toyota's top salesman — built for TikTok-first, zero ad spend, and zero prior following.</p>
+  <div class="badge-row">
+    <span class="badge tiktok">TikTok</span>
+    <span class="badge youtube">YouTube Shorts</span>
+    <span class="badge fb">Facebook Reels</span>
+    <span class="badge email">Cold Email / SMS</span>
+  </div>
+</div>
+
+<!-- SECTION 1: WHY THIS WORKS -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">The Opportunity</div>
+      <div class="section-title">WHY A CAR GUY WINS ON SOCIAL</div>
+    </div>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">The Trust Gap Is Real</div>
+      <div class="card-body">Most people dread buying a car. A salesman with a face, a personality, and local credibility on TikTok becomes the "guy I already know" before they ever step on the lot.</div>
+      <div class="card-tag">Zero-cost trust building</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📍</div>
+      <div class="card-title">Quincy Is Underserved</div>
+      <div class="card-body">Small-market TikTok is wide open. No local Toyota competitor is doing this well. Early mover advantage in a tight geographic market = massive organic reach with minimal effort.</div>
+      <div class="card-tag">First mover edge</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔁</div>
+      <div class="card-title">One Video = Multiple Platforms</div>
+      <div class="card-body">Every TikTok auto-reposts to YouTube Shorts and Facebook Reels. Three audiences, one shoot. Total time investment per post: under 10 minutes when batching.</div>
+      <div class="card-tag">Content multiplication</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚗</div>
+      <div class="card-title">Toyota Practically Scripts Itself</div>
+      <div class="card-body">Tacoma cult following. 4Runner loyalists. RAV4 Hybrid demand. Camry XSE aesthetics. The inventory IS the content — he just has to show up and talk about it.</div>
+      <div class="card-tag">Built-in audience</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: COMPETITIVE INTEL / SCRAPING -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">Research Phase</div>
+      <div class="section-title">SCRAPING FOR COMPETITIVE INTEL</div>
+    </div>
+  </div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7;max-width:680px;">Before posting a single video, spend 2-3 days studying what's already working. AI scraping tools pull public data from top automotive creators so you can reverse-engineer their success without guessing.</p>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🪝</div>
+      <div class="card-title">Identify Viral Hooks</div>
+      <div class="card-body">Use Apify's TikTok Scraper to extract transcripts from the top 50 trending automotive videos. Feed them into Claude or ChatGPT with the prompt: <em>"What do the first 5 seconds of the top 20 have in common?"</em></div>
+      <div class="card-tag">Tool: Apify · Free tier available</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Theme Analysis</div>
+      <div class="card-body">Ask AI to pattern-match: Are "Day in the Life" dealer videos outperforming walkthroughs this month? Are truck features beating sedan reviews? Let data decide the content mix.</div>
+      <div class="card-tag">Tool: Claude API · 30 sec analysis</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">#️⃣</div>
+      <div class="card-title">Hashtag Stack Research</div>
+      <div class="card-body">Scrape videos under #CarSalesLife, #ToyotaNation, #Tacoma, #TruckTok. Find which secondary regional tags (#QuincyIL, #WestIllinois, #IllinoisTruck) are getting traction.</div>
+      <div class="card-tag">Tool: Octoparse · No-code</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📈</div>
+      <div class="card-title">Spike Tracking</div>
+      <div class="card-body">Use Dumpling AI to monitor 5-10 top car sales creators. It flags which specific posts caused follower spikes — that's your blueprint for what to replicate first.</div>
+      <div class="card-tag">Tool: Dumpling AI · $25/mo</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <div class="card-title">Comment Mining</div>
+      <div class="card-body">Octoparse can scrape comments from competitors' videos. These are literally buyers telling you what questions they have. Turn each question into a video. Never run out of ideas.</div>
+      <div class="card-tag">Tool: Octoparse · Pre-built templates</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">Automate the Research Loop</div>
+      <div class="card-body">Connect Apify → Google Sheets → Claude via n8n. Every morning, new competitor videos are pulled, summarized by AI, and dropped into a sheet. Zero manual work after setup.</div>
+      <div class="card-tag">Tool: n8n · Free self-hosted</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: TOOL STACK -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">No-Code Setup</div>
+      <div class="section-title">THE TOOL STACK</div>
+    </div>
+  </div>
+  <div class="tool-row">
+    <div class="tool-item">
+      <div class="tool-dot"></div>
+      <div>
+        <div class="tool-name">Apify TikTok Scraper</div>
+        <div class="tool-desc">Pulls public video transcripts, view counts, engagement rates from any public profile or hashtag. No login required.</div>
+        <div class="tool-price">FREE tier · $49/mo pro</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-dot"></div>
+      <div>
+        <div class="tool-name">Octoparse</div>
+        <div class="tool-desc">Pre-built TikTok & YouTube scraping templates. No coding. Exports clean data to Excel or Google Sheets in minutes.</div>
+        <div class="tool-price">FREE tier · $75/mo standard</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-dot"></div>
+      <div>
+        <div class="tool-name">n8n</div>
+        <div class="tool-desc">Connects Apify + Google Sheets + Claude API into one automated morning briefing. Self-hosted = free forever after setup.</div>
+        <div class="tool-price">FREE self-hosted · $20/mo cloud</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-dot"></div>
+      <div>
+        <div class="tool-name">Dumpling AI</div>
+        <div class="tool-desc">Tracks competitor follower growth and flags which posts caused spikes. Best for identifying breakout content formats.</div>
+        <div class="tool-price">~$25/mo</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-dot"></div>
+      <div>
+        <div class="tool-name">CapCut</div>
+        <div class="tool-desc">Free mobile editor with AI captions, auto-cut to beat, trending audio library. Turns a 60-second iPhone walk-around into a polished TikTok in under 5 minutes.</div>
+        <div class="tool-price">FREE · Pro $8/mo</div>
+      </div>
+    </div>
+    <div class="tool-item">
+      <div class="tool-dot"></div>
+      <div>
+        <div class="tool-name">Publer / Later</div>
+        <div class="tool-desc">Schedule TikTok + YouTube Shorts + Facebook Reels from one dashboard. Post once, publish everywhere, auto-hashtag injection included.</div>
+        <div class="tool-price">$12–$18/mo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: CONTENT STRATEGY -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">What to Post</div>
+      <div class="section-title">CONTENT TYPES THAT CONVERT</div>
+    </div>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎬</div>
+      <div class="card-title">The "Honest Walk-Around"</div>
+      <div class="card-body">No script, no salesiness. Just him walking around a fresh lot arrival talking about what he genuinely likes about it. Authenticity is the algorithm's favorite thing right now.</div>
+      <div class="card-tag">🔥 Highest organic reach</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📆</div>
+      <div class="card-title">Day in the Life</div>
+      <div class="card-body">Show the real job. Pre-delivery inspection, coffee before the lot opens, a delivery moment (with customer permission). Makes him relatable, not a stereotype.</div>
+      <div class="card-tag">📈 Best for follows</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤔</div>
+      <div class="card-title">Myth Busting</div>
+      <div class="card-body">"Here's what dealers actually make on a new car." "No, we don't hide fees on Toyotas." Radical transparency = massive shares from people who never thought a car salesman would say that.</div>
+      <div class="card-tag">♻️ Highest share rate</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <div class="card-title">Deal Breakdowns</div>
+      <div class="card-body">"Here's what a $0 down RAV4 Hybrid actually looks like monthly." Show the math. Buyers are scared of math — be the guy who demystifies it. Instant credibility.</div>
+      <div class="card-tag">💬 High comment volume</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <div class="card-title">Social Proof Moments</div>
+      <div class="card-body">Film the delivery. Get the customer to say one sentence on camera. "Just picked up my Tacoma from [name], smoothest buying experience ever." That's a 15-second closer.</div>
+      <div class="card-tag">🎯 Direct conversion</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛻</div>
+      <div class="card-title">Toyota-Specific Cult Content</div>
+      <div class="card-body">4Runner owners are a religion. Tacoma owners are a religion. Make a video just for them. "Every 4Runner that came through the lot this week" gets saved by thousands of Toyota loyalists.</div>
+      <div class="card-tag">🔖 Massive save rate</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: HOOKS -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">First 3 Seconds</div>
+      <div class="section-title">PROVEN HOOK SCRIPTS</div>
+    </div>
+  </div>
+  <div class="hook-list">
+    <div class="hook-item">
+      <strong>Curiosity Hook</strong>
+      "The one thing dealers don't want you to Google before you walk in..."
+    </div>
+    <div class="hook-item">
+      <strong>Local Identity Hook</strong>
+      "If you're buying a truck in Quincy this year, you need to see this before you decide."
+    </div>
+    <div class="hook-item">
+      <strong>Myth Bust Hook</strong>
+      "I've been selling cars for [X] years — here's what I wish someone told me as a buyer."
+    </div>
+    <div class="hook-item">
+      <strong>FOMO Hook</strong>
+      "This exact Tacoma sold in 4 hours. Here's why — and how to get first call next time."
+    </div>
+    <div class="hook-item">
+      <strong>Personality Hook</strong>
+      "Top salesman at Shottenkirk Toyota. AMA. Nothing is off limits."
+    </div>
+    <div class="hook-item">
+      <strong>Math Hook</strong>
+      "Real numbers. $0 down, 2026 RAV4 Hybrid. Watch before you finance anywhere else."
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: CONTENT CALENDAR -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">Posting Rhythm</div>
+      <div class="section-title">WEEKLY CONTENT CALENDAR</div>
+    </div>
+  </div>
+  <div class="calendar-grid">
+    <div class="cal-day hot">
+      <div class="cal-day-name">Mon</div>
+      <div class="cal-type">New Arrivals Walk-Around</div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name">Tue</div>
+      <div class="cal-type">Myth Bust or Tip</div>
+    </div>
+    <div class="cal-day hot">
+      <div class="cal-day-name">Wed</div>
+      <div class="cal-type">Deal Breakdown</div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name">Thu</div>
+      <div class="cal-type">Day in the Life clip</div>
+    </div>
+    <div class="cal-day gold">
+      <div class="cal-day-name">Fri</div>
+      <div class="cal-type">Customer Delivery Moment</div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name">Sat</div>
+      <div class="cal-type">Lot POV / Behind the Scenes</div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name">Sun</div>
+      <div class="cal-type">Rest or Repurpose Best of Week</div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:16px;">🔥 = highest-traffic days. Start with 4x/week, scale to daily once comfortable. Batch film on Saturday mornings (lot is busy = natural content).</p>
+</div>
+
+<!-- SECTION 7: SUCCESS METRICS -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">KPIs to Track</div>
+      <div class="section-title">WHAT GOOD LOOKS LIKE</div>
+    </div>
+  </div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-val">1K</div>
+      <div class="metric-label">TikTok followers by Day 60</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">5%</div>
+      <div class="metric-label">Engagement rate target (views → likes)</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">3×</div>
+      <div class="metric-label">Repurpose ratio per video shoot</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">10</div>
+      <div class="metric-label">DMs / profile visits per post goal</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">30s</div>
+      <div class="metric-label">Minimum avg watch time to hit</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">2</div>
+      <div class="metric-label">Lead conversations per week from social within 90 days</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 8: PHASE ROLLOUT -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">90-Day Launch</div>
+      <div class="section-title">PHASE ROLLOUT PLAN</div>
+    </div>
+  </div>
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-dot">1</div>
+      <div class="phase-content">
+        <div class="phase-name">Research & Setup</div>
+        <div class="phase-time">Week 1–2</div>
+        <ul class="phase-tasks">
+          <li>Set up Apify + Octoparse, scrape top 10 automotive TikTok accounts</li>
+          <li>Feed transcripts into Claude, identify top 5 hook styles and content themes</li>
+          <li>Create TikTok, YouTube, and Facebook accounts with unified branding</li>
+          <li>Install CapCut, practice editing one test video (don't post yet)</li>
+          <li>Set up Publer for cross-platform scheduling</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-dot">2</div>
+      <div class="phase-content">
+        <div class="phase-name">Soft Launch — Content Testing</div>
+        <div class="phase-time">Week 3–5</div>
+        <ul class="phase-tasks">
+          <li>Post 4x/week — 2 walk-arounds, 1 tip video, 1 personality/day-in-life</li>
+          <li>Test 3 different hook styles, track which gets highest retention</li>
+          <li>Engage with every comment within 2 hours of posting</li>
+          <li>Study which video at Day 21 has highest saves-to-views ratio — double down on that format</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-dot">3</div>
+      <div class="phase-content">
+        <div class="phase-name">Scale & Local Presence</div>
+        <div class="phase-time">Week 6–10</div>
+        <ul class="phase-tasks">
+          <li>Introduce location hashtags (#QuincyIL, #AdamsCounty, #WestIllinois)</li>
+          <li>Start filming customer delivery moments (consent form = 30 seconds)</li>
+          <li>Add a "DM me your budget" CTA at end of deal breakdown videos</li>
+          <li>Set up n8n automation to pull weekly competitor intelligence briefing</li>
+          <li>Explore TikTok Automotive Inventory Ads (AIAs) — launching 2026</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-dot">4</div>
+      <div class="phase-content">
+        <div class="phase-name">Monetize the Audience</div>
+        <div class="phase-time">Week 11–13</div>
+        <ul class="phase-tasks">
+          <li>Convert social followers into cold email/SMS list via "DM for inventory alerts"</li>
+          <li>Tie social content into existing cold call/email campaigns for warm follow-up</li>
+          <li>Review 90-day analytics, double down on top 3 performing content types</li>
+          <li>Evaluate paid TikTok/Facebook boost on top 3 organic performers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 9: LEGAL -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="section-num">09</div>
+    <div class="section-title-block">
+      <div class="section-eyebrow">Stay Clean</div>
+      <div class="section-title">ETHICAL & LEGAL GUARDRAILS</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <div class="legal-box">
+      <div class="legal-icon">⚖️</div>
+      <div class="legal-text"><strong>Scrape public data only.</strong> All tools listed pull publicly available info (views, likes, captions, public video metadata). Never attempt to scrape private accounts or bypass login walls — legal exposure isn't worth it.</div>
+    </div>
+    <div class="legal-box">
+      <div class="legal-icon">🐢</div>
+      <div class="legal-text"><strong>Rate-limit your scraping.</strong> Don't pull thousands of pages per minute. Configure Apify/Octoparse with delays between requests to avoid IP blocks and TOS flags. Slow and steady wins.</div>
+    </div>
+    <div class="legal-box">
+      <div class="legal-icon">📋</div>
+      <div class="legal-text"><strong>Dealership social media policy.</strong> Shottenkirk doesn't allow individual websites — confirm their social media policy before posting anything that mentions the dealership name, inventory prices, or specific deal structures. Frame it as "personal brand" if needed.</div>
+    </div>
+    <div class="legal-box">
+      <div class="legal-icon">📸</div>
+      <div class="legal-text"><strong>Customer consent for video.</strong> Always get verbal (or written) consent before filming customers or using their likeness. A simple thumbs-up on camera and "is it cool if I post this?" counts.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Built by <span>DTE Solutions LLC</span> · Quincy, IL · Social strategy for Shottenkirk Toyota
+</div>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

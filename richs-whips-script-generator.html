@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rich's Whips — TikTok Script Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@300;400;500;600&family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0A;
+    --surface: #111111;
+    --card: #161616;
+    --border: #252525;
+    --gold: #FFD046;
+    --gold2: #E8A800;
+    --red: #FF2D2D;
+    --white: #F2F0EB;
+    --muted: #666;
+    --green: #00E87A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Archivo', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    padding: 28px 28px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .logo-block {}
+  .logo-tag {
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .logo {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(28px, 6vw, 44px);
+    line-height: 1;
+    color: var(--white);
+    letter-spacing: -1px;
+  }
+  .logo span {
+    color: var(--gold);
+    position: relative;
+  }
+  .logo span::after {
+    content: '™';
+    font-size: 12px;
+    vertical-align: super;
+    color: var(--muted);
+  }
+  .logo-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+  .powered-badge {
+    background: #1A1A00;
+    border: 1px solid #3D3300;
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    color: var(--gold2);
+    letter-spacing: 1px;
+    align-self: center;
+  }
+
+  /* DIVIDER */
+  .hline {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 28px 0;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 120px);
+  }
+  @media (max-width: 780px) {
+    .main { grid-template-columns: 1fr; }
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .field-label {
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .field-group { display: flex; flex-direction: column; }
+
+  select, input, textarea {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--white);
+    font-family: 'Archivo', sans-serif;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    appearance: none;
+  }
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--gold);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    padding: 5px 12px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-family: 'Inconsolata', monospace;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--card);
+    letter-spacing: 0.5px;
+  }
+  .chip:hover { border-color: var(--gold); color: var(--gold); }
+  .chip.active {
+    background: var(--gold);
+    color: #000;
+    border-color: var(--gold);
+    font-weight: 600;
+  }
+
+  .tone-slider-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .tone-btn {
+    flex: 1;
+    padding: 8px 4px;
+    background: var(--card);
+    border: none;
+    color: var(--muted);
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: all 0.15s;
+    border-right: 1px solid var(--border);
+  }
+  .tone-btn:last-child { border-right: none; }
+  .tone-btn:hover { background: #1E1E1E; color: var(--white); }
+  .tone-btn.active { background: var(--gold); color: #000; font-weight: 600; }
+
+  .gen-btn {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    border-radius: 3px;
+    padding: 14px;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 4px;
+  }
+  .gen-btn:hover { background: var(--gold2); }
+  .gen-btn:active { transform: scale(0.98); }
+  .gen-btn:disabled {
+    background: #2A2A00;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .santi-card {
+    background: #0E0E00;
+    border: 1px solid #2A2500;
+    border-radius: 4px;
+    padding: 14px;
+  }
+  .santi-card-title {
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .santi-card-body {
+    font-size: 12px;
+    color: #998A3A;
+    line-height: 1.6;
+  }
+
+  /* OUTPUT PANEL */
+  .output-panel {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .output-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 18px;
+    color: var(--white);
+    letter-spacing: -0.3px;
+  }
+  .copy-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 3px;
+    padding: 7px 16px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+  /* SCRIPT DISPLAY */
+  .script-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .script-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    animation: fadeUp 0.3s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .script-section:nth-child(1) { animation-delay: 0.05s; }
+  .script-section:nth-child(2) { animation-delay: 0.12s; }
+  .script-section:nth-child(3) { animation-delay: 0.19s; }
+  .script-section:nth-child(4) { animation-delay: 0.26s; }
+  .script-section:nth-child(5) { animation-delay: 0.33s; }
+
+  .script-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: #141414;
+  }
+  .section-icon { font-size: 14px; }
+  .section-name {
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .section-badge {
+    margin-left: auto;
+    font-family: 'Inconsolata', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .badge-hook { background: #FF2D2D22; color: var(--red); border: 1px solid #FF2D2D33; }
+  .badge-body { background: #FFD04622; color: var(--gold); border: 1px solid #FFD04633; }
+  .badge-cta { background: #00E87A22; color: var(--green); border: 1px solid #00E87A33; }
+  .badge-caption { background: #748FFC22; color: #748FFC; border: 1px solid #748FFC33; }
+  .badge-hashtags { background: #C084FC22; color: #C084FC; border: 1px solid #C084FC33; }
+
+  .script-section-body {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--white);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .script-section-body.hashtags {
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    color: #748FFC;
+    line-height: 1.8;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 32px;
+    gap: 16px;
+  }
+  .empty-icon {
+    font-size: 48px;
+    filter: grayscale(0.5);
+  }
+  .empty-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 20px;
+    color: #333;
+    letter-spacing: -0.3px;
+  }
+  .empty-sub {
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 320px;
+    line-height: 1.6;
+  }
+
+  /* LOADING */
+  .loading-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  .loading-bars {
+    display: flex;
+    gap: 5px;
+    align-items: flex-end;
+    height: 40px;
+  }
+  .bar {
+    width: 6px;
+    background: var(--gold);
+    border-radius: 3px;
+    animation: bounce 0.8s ease-in-out infinite;
+  }
+  .bar:nth-child(1) { animation-delay: 0s; }
+  .bar:nth-child(2) { animation-delay: 0.1s; }
+  .bar:nth-child(3) { animation-delay: 0.2s; }
+  .bar:nth-child(4) { animation-delay: 0.3s; }
+  .bar:nth-child(5) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 100% { height: 10px; opacity: 0.3; }
+    50% { height: 40px; opacity: 1; }
+  }
+  .loading-text {
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ERROR */
+  .error-box {
+    background: #1A0A0A;
+    border: 1px solid #3D1010;
+    border-radius: 4px;
+    padding: 16px;
+    color: #FF8080;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+
+  /* HISTORY */
+  .history-strip {
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    overflow-x: auto;
+  }
+  .history-label {
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+  .history-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 5px 12px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .history-chip:hover { border-color: var(--gold); color: var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-tag">@richswhips · TikTok Script Generator</div>
+    <div class="logo">RICH'S <span>WHIPS</span></div>
+    <div class="logo-sub">Powered by AI · Built for Santi · Shottenkirk Toyota, Quincy IL</div>
+  </div>
+  <div class="powered-badge">⚡ AI SCRIPT ENGINE</div>
+</header>
+<div class="hline"></div>
+
+<div class="main">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="santi-card">
+      <div class="santi-card-title">🎯 Santi's Voice</div>
+      <div class="santi-card-body">No BS. Street-smart. Real talk about real deals. Top salesman energy but never fake. Makes finance feel simple. Quincy's guy.</div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Content Type</div>
+      <select id="contentType">
+        <option value="deal_breakdown">💰 Deal Breakdown</option>
+        <option value="walk_around">🚗 Vehicle Walk-Around</option>
+        <option value="myth_bust">🤔 Myth Bust / Real Talk</option>
+        <option value="day_in_life">📆 Day in the Life</option>
+        <option value="delivery">🏆 Customer Delivery Moment</option>
+        <option value="hot_take">🔥 Hot Take / Opinion</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Vehicle / Topic</div>
+      <input type="text" id="vehicle" placeholder="e.g. 2025 Tacoma TRD Pro, RAV4 Hybrid deal..." />
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Key Detail (optional)</div>
+      <input type="text" id="keyDetail" placeholder="e.g. $0 down, $389/mo · just arrived · 47mpg..." />
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Tone Mix</div>
+      <div class="tone-slider-row">
+        <button class="tone-btn active" data-tone="balanced" onclick="setTone(this)">BALANCED</button>
+        <button class="tone-btn" data-tone="funny" onclick="setTone(this)">FUNNY</button>
+        <button class="tone-btn" data-tone="hype" onclick="setTone(this)">HYPE</button>
+        <button class="tone-btn" data-tone="straight" onclick="setTone(this)">NO BS</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Video Length Target</div>
+      <div class="chip-row" id="lengthChips">
+        <div class="chip active" data-len="15" onclick="setLength(this)">15s</div>
+        <div class="chip" data-len="30" onclick="setLength(this)">30s</div>
+        <div class="chip" data-len="60" onclick="setLength(this)">60s</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Extra Notes (optional)</div>
+      <textarea id="extraNotes" placeholder="e.g. mention he's been selling for X years, reference local Quincy audience, call out truck guys..."></textarea>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generateScript()">⚡ GENERATE SCRIPT</button>
+
+  </div>
+
+  <!-- OUTPUT -->
+  <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+    <div class="output-panel" id="outputPanel">
+      <div class="output-header" id="outputHeader" style="display:none;">
+        <div class="output-title" id="outputTitle">Script Ready</div>
+        <button class="copy-btn" id="copyBtn" onclick="copyScript()">COPY ALL</button>
+      </div>
+      <div id="scriptOutput">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">🎬</div>
+          <div class="empty-title">No script yet</div>
+          <div class="empty-sub">Fill in the details on the left and hit Generate. Santi's voice, deal energy, Quincy flavor — all baked in.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-strip" id="historyStrip" style="display:none;">
+      <div class="history-label">Recent</div>
+      <div id="historyChips"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedTone = 'balanced';
+  let selectedLength = '15';
+  let scriptHistory = [];
+  let lastFullScript = '';
+
+  function setTone(btn) {
+    document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedTone = btn.dataset.tone;
+  }
+
+  function setLength(chip) {
+    document.querySelectorAll('#lengthChips .chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedLength = chip.dataset.len;
+  }
+
+  async function generateScript() {
+    const contentType = document.getElementById('contentType').value;
+    const vehicle = document.getElementById('vehicle').value.trim();
+    const keyDetail = document.getElementById('keyDetail').value.trim();
+    const extraNotes = document.getElementById('extraNotes').value.trim();
+
+    if (!vehicle) {
+      document.getElementById('vehicle').focus();
+      document.getElementById('vehicle').style.borderColor = '#FF2D2D';
+      setTimeout(() => document.getElementById('vehicle').style.borderColor = '', 1500);
+      return;
+    }
+
+    const btn = document.getElementById('genBtn');
+    btn.disabled = true;
+    btn.textContent = '⚡ GENERATING...';
+
+    document.getElementById('emptyState') && (document.getElementById('emptyState').style.display = 'none');
+    document.getElementById('outputHeader').style.display = 'none';
+    document.getElementById('scriptOutput').innerHTML = `
+      <div class="loading-state">
+        <div class="loading-bars">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+        <div class="loading-text">Writing Santi's script...</div>
+      </div>`;
+
+    const contentTypeLabels = {
+      deal_breakdown: 'Deal Breakdown',
+      walk_around: 'Vehicle Walk-Around',
+      myth_bust: 'Myth Bust / Real Talk',
+      day_in_life: 'Day in the Life',
+      delivery: 'Customer Delivery Moment',
+      hot_take: 'Hot Take / Opinion'
+    };
+
+    const toneInstructions = {
+      balanced: 'Mix of straight-talk confidence and natural humor. Real but not over the top.',
+      funny: 'Lean into the comedy. Self-aware, a little goofy, but always lands the point. Think funny sells.',
+      hype: 'High energy. Punchy. Makes people stop scrolling. Still real, never fake hype.',
+      straight: 'Pure no-BS. Direct, confident, zero fluff. Street credibility. Says what others won\'t.'
+    };
+
+    const lengthGuide = {
+      '15': 'Very short. Hook + 1 punchy point + CTA. ~80-100 words spoken.',
+      '30': 'Short. Hook + 2-3 key points + CTA. ~150-180 words spoken.',
+      '60': 'Full video. Hook + full breakdown + personality moment + CTA. ~250-300 words spoken.'
+    };
+
+    const systemPrompt = `You are a TikTok script writer for Rich Santiago (goes by Santi), the top salesman at Shottenkirk Toyota in Quincy, Illinois. His brand handle is @RichsWhips.
+
+SANTI'S PERSONALITY:
+- Half Black, half Puerto Rican, grew up hard, played football, street smart
+- No-BS guy but has great personality and natural charisma  
+- Authentic, real, never fake or salesy
+- Specializes in financing and deals — makes the math simple for real people
+- Quincy IL local pride — speaks to his community
+- Confidence without arrogance. People trust him because he's one of them.
+- His humor is dry and real, not forced. Funny because he's honest, not because he's trying to be funny.
+
+SCRIPT FORMAT: You must respond with a JSON object with exactly these keys:
+{
+  "hook": "The opening 1-3 sentences. Must stop the scroll. Bold, specific, real.",
+  "body": "The main content. Conversational, punchy paragraphs. Write how Santi actually talks — not corporate speak.",
+  "cta": "Call to action. Direct and natural. Usually: DM him, comment, follow, come to the lot.",
+  "caption": "The TikTok post caption. 2-3 sentences max. Punchy. Includes emojis naturally.",
+  "hashtags": "10-15 hashtags as a space-separated string. Mix of: niche car hashtags, Toyota-specific, local (#QuincyIL), deal/finance, personality/lifestyle.",
+  "title": "A short punchy title for this script (5 words max)"
+}
+
+CRITICAL: Return ONLY the JSON object. No preamble, no markdown, no backticks.`;
+
+    const userPrompt = `Write a TikTok script for Santi with these parameters:
+
+Content Type: ${contentTypeLabels[contentType]}
+Vehicle/Topic: ${vehicle}
+Key Detail: ${keyDetail || 'none provided'}
+Tone: ${toneInstructions[selectedTone]}
+Video Length: ${lengthGuide[selectedLength]}
+Extra Notes: ${extraNotes || 'none'}
+
+Remember: Santi is real, direct, and Quincy-local. He makes car buying feel less scary. He's not a typical salesman — and that's exactly the brand.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userPrompt }]
+        })
+      });
+
+      const data = await response.json();
+      const rawText = data.content?.map(i => i.text || '').join('').trim();
+      const clean = rawText.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      renderScript(parsed, vehicle);
+
+      // History
+      scriptHistory.unshift({ label: parsed.title || vehicle.substring(0, 20), parsed, vehicle });
+      if (scriptHistory.length > 5) scriptHistory.pop();
+      updateHistory();
+
+    } catch (err) {
+      document.getElementById('scriptOutput').innerHTML = `
+        <div class="error-box">
+          ⚠️ Something went wrong generating the script. Check your connection and try again.<br><br>
+          <small style="color:#666;">${err.message}</small>
+        </div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '⚡ GENERATE SCRIPT';
+    }
+  }
+
+  function renderScript(parsed, vehicle) {
+    const sections = [
+      { key: 'hook', icon: '🪝', label: 'HOOK', badgeClass: 'badge-hook', badgeText: 'FIRST 3 SEC' },
+      { key: 'body', icon: '🎙️', label: 'BODY', badgeClass: 'badge-body', badgeText: 'MAIN CONTENT' },
+      { key: 'cta', icon: '👆', label: 'CALL TO ACTION', badgeClass: 'badge-cta', badgeText: 'END CARD' },
+      { key: 'caption', icon: '✏️', label: 'POST CAPTION', badgeClass: 'badge-caption', badgeText: 'CAPTION' },
+      { key: 'hashtags', icon: '#️⃣', label: 'HASHTAGS', badgeClass: 'badge-hashtags', badgeText: 'TAGS' },
+    ];
+
+    let fullScriptText = `RICH'S WHIPS — TIKTOK SCRIPT\n${'='.repeat(40)}\n\n`;
+    let html = '<div class="script-container">';
+
+    for (const s of sections) {
+      const content = parsed[s.key] || '';
+      fullScriptText += `[${s.label}]\n${content}\n\n`;
+      html += `
+        <div class="script-section">
+          <div class="script-section-header">
+            <span class="section-icon">${s.icon}</span>
+            <span class="section-name">${s.label}</span>
+            <span class="section-badge ${s.badgeClass}">${s.badgeText}</span>
+          </div>
+          <div class="script-section-body${s.key === 'hashtags' ? ' hashtags' : ''}">${escapeHtml(content)}</div>
+        </div>`;
+    }
+
+    html += '</div>';
+    lastFullScript = fullScriptText;
+
+    document.getElementById('scriptOutput').innerHTML = html;
+    document.getElementById('outputTitle').textContent = parsed.title || `Script — ${vehicle}`;
+    document.getElementById('outputHeader').style.display = 'flex';
+    document.getElementById('copyBtn').textContent = 'COPY ALL';
+    document.getElementById('copyBtn').className = 'copy-btn';
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function copyScript() {
+    if (!lastFullScript) return;
+    navigator.clipboard.writeText(lastFullScript).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ COPIED';
+      btn.className = 'copy-btn copied';
+      setTimeout(() => {
+        btn.textContent = 'COPY ALL';
+        btn.className = 'copy-btn';
+      }, 2000);
+    });
+  }
+
+  function updateHistory() {
+    const strip = document.getElementById('historyStrip');
+    const chips = document.getElementById('historyChips');
+    if (scriptHistory.length === 0) { strip.style.display = 'none'; return; }
+    strip.style.display = 'flex';
+    chips.innerHTML = scriptHistory.map((item, i) =>
+      `<div class="history-chip" onclick="loadHistory(${i})">${item.label}</div>`
+    ).join('');
+  }
+
+  function loadHistory(i) {
+    const item = scriptHistory[i];
+    renderScript(item.parsed, item.vehicle);
+  }
+
+  // Enter key on inputs
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && !document.getElementById('genBtn').disabled) {
+      generateScript();
+    }
+  });
+</script>
+</body>
+</html>
