@@ -474,6 +474,15 @@
     </div>
 
     <div class="field-group">
+      <div class="field-label">Model Provider</div>
+      <select id="providerSelect">
+        <option value="gemini">Google (Gemini 1.5 Pro)</option>
+        <option value="openai">OpenAI (GPT-4o)</option>
+        <option value="anthropic">Anthropic (Claude Sonnet 4)</option>
+      </select>
+    </div>
+
+    <div class="field-group">
       <div class="field-label">Content Type</div>
       <select id="contentType">
         <option value="deal_breakdown">💰 Deal Breakdown</option>
@@ -482,11 +491,20 @@
         <option value="day_in_life">📆 Day in the Life</option>
         <option value="delivery">🏆 Customer Delivery Moment</option>
         <option value="hot_take">🔥 Hot Take / Opinion</option>
+        <option value="outline">📝 Script Outline</option>
+        <option value="prompt">🪄 Prompt Generator</option>
       </select>
     </div>
 
     <div class="field-group">
       <div class="field-label">Vehicle / Topic</div>
+      <div class="chip-row" style="margin-bottom: 8px;">
+        <div class="chip" onclick="setVehiclePreset('2024 Toyota Camry')">Camry</div>
+        <div class="chip" onclick="setVehiclePreset('2024 Toyota RAV4')">RAV4</div>
+        <div class="chip" onclick="setVehiclePreset('2024 Toyota Tacoma')">Tacoma</div>
+        <div class="chip" onclick="setVehiclePreset('2024 Toyota Highlander')">Highlander</div>
+        <div class="chip" onclick="setVehiclePreset('2024 Toyota Tundra')">Tundra</div>
+      </div>
       <input type="text" id="vehicle" placeholder="e.g. 2025 Tacoma TRD Pro..." />
     </div>
 
@@ -524,6 +542,20 @@
       <textarea id="extraNotes" placeholder="e.g. reference local Pittsfield sellers, mention Shottenkirk buyout process..."></textarea>
     </div>
 
+    <div class="field-group">
+      <div class="field-label">Options</div>
+      <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer;">
+          <input type="checkbox" id="variationsMode" style="width: auto; cursor: pointer;">
+          <span>3 Variations</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer;">
+          <input type="checkbox" id="competitorMode" style="width: auto; cursor: pointer;">
+          <span>vs Competitors</span>
+        </label>
+      </div>
+    </div>
+
     <button class="gen-btn" id="genBtn" onclick="generateScript()">⚡ GENERATE SCRIPT</button>
 
   </div>
@@ -556,19 +588,30 @@
   let selectedLength = '15';
   let scriptHistory = [];
   let lastFullScript = '';
-  let API_KEY = "";
-  let IS_OPENAI = true;
+  let KEYS = {};
 
   async function initApp() {
+    // Load history from localStorage
+    const saved = localStorage.getItem('richswhips_history');
+    if (saved) {
+      try {
+        scriptHistory = JSON.parse(saved);
+        updateHistory();
+      } catch(e) {}
+    }
+
     try {
       const response = await fetch('settings.json');
-      const settings = await response.json();
-      API_KEY = settings.ANTHROPIC_API_KEY; 
+      KEYS = await response.json();
       
-      if (API_KEY.startsWith('sk-ant')) {
-        IS_OPENAI = false;
-      } else {
-        IS_OPENAI = true;
+      // Auto-select provider based on available keys
+      const providerSelect = document.getElementById('providerSelect');
+      if (KEYS.GEMINI_API_KEY && KEYS.GEMINI_API_KEY !== 'REPLACE_WITH_YOUR_KEY') {
+        providerSelect.value = 'gemini';
+      } else if (KEYS.OPENAI_API_KEY && KEYS.OPENAI_API_KEY !== 'REPLACE_WITH_YOUR_KEY') {
+        providerSelect.value = 'openai';
+      } else if (KEYS.ANTHROPIC_API_KEY && KEYS.ANTHROPIC_API_KEY !== 'REPLACE_WITH_YOUR_KEY') {
+        providerSelect.value = 'anthropic';
       }
 
       document.getElementById("genBtn").disabled = false;
@@ -585,6 +628,10 @@
     selectedTone = btn.dataset.tone;
   }
 
+  function setVehiclePreset(vehicle) {
+    document.getElementById('vehicle').value = vehicle;
+  }
+
   function setLength(chip) {
     document.querySelectorAll('#lengthChips .chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
@@ -592,6 +639,7 @@
   }
 
   async function generateScript() {
+    const provider = document.getElementById('providerSelect').value;
     const contentType = document.getElementById('contentType').value;
     const vehicle = document.getElementById('vehicle').value.trim();
     const vinDetail = document.getElementById('vinDetail').value.trim();
@@ -611,24 +659,17 @@
 
     document.getElementById('emptyState') && (document.getElementById('emptyState').style.display = 'none');
     document.getElementById('outputHeader').style.display = 'none';
+    
+    const providerNames = { gemini: 'Gemini', openai: 'GPT-4o', anthropic: 'Claude' };
     document.getElementById('scriptOutput').innerHTML = `
       <div class="loading-state">
         <div class="loading-bars">
           <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
-        <div class="loading-text">Writing Santi's Script...</div>
+        <div class="loading-text">Reasoning with ${providerNames[provider]}...</div>
       </div>`;
 
-    const systemPrompt = `You are a TikTok script writer for Rich Santiago (Santi), the top salesman at Shottenkirk Toyota in Quincy, Illinois. Brand: @RichsWhips.
-
-SANTI'S PERSONA (DTE STANDARD):
-- Half Black, half Puerto Rican. High-integrity, no-BS.
-- Quincy Local. Built from the ground up. Street-smart but professional.
-- He makes the math simple. He demystifies the car-buying trust gap.
-- He uses high-fidelity data (VINs, Specs, Assembly Location) to prove value.
-- He speaks directly to the Quincy, Pittsfield, and Springfield communities.
-
-SCRIPT FORMAT (JSON ONLY):
+    let scriptFormat = `SCRIPT FORMAT (JSON ONLY):
 {
   "hook": "Scroll-stopping first 3 seconds. Use Santi's voice.",
   "body": "The meat. Punchy, conversational, data-driven.",
@@ -638,6 +679,39 @@ SCRIPT FORMAT (JSON ONLY):
   "title": "5-word max title"
 }`;
 
+    if (contentType === 'outline') {
+      scriptFormat = `OUTLINE FORMAT (JSON ONLY):
+{
+  "hook": "Hooks and opening visual ideas.",
+  "body": "A bulleted list of the key segments and data points to cover. Use high-fidelity data.",
+  "cta": "The transition and final call to action.",
+  "caption": "TikTok caption.",
+  "hashtags": "Relevant hashtags.",
+  "title": "Outline Title"
+}`;
+    } else if (contentType === 'prompt') {
+      scriptFormat = `PROMPT FORMAT (JSON ONLY):
+{
+  "hook": "Prompt for generating a hook.",
+  "body": "Detailed prompt for generating the main content.",
+  "cta": "Prompt for the call to action.",
+  "caption": "Prompt for the caption.",
+  "hashtags": "Relevant tags.",
+  "title": "Prompt Set Title"
+}`;
+    }
+
+    const systemPrompt = `You are a TikTok content architect for Rich Santiago (Santi), the top salesman at Shottenkirk Toyota in Quincy, Illinois. Brand: @RichsWhips.
+
+SANTI'S PERSONA (DTE STANDARD):
+- Half Black, half Puerto Rican. High-integrity, no-BS.
+- Quincy Local. Built from the ground up. Street-smart but professional.
+- He makes the math simple. He demystifies the car-buying trust gap.
+- He uses high-fidelity data (VINs, Specs, Assembly Location) to prove value.
+- He speaks directly to the Quincy, Pittsfield, and Springfield communities.
+
+${scriptFormat}`;
+
     const userPrompt = `Content Type: ${contentType}
 Vehicle: ${vehicle}
 VIN/Specs: ${vinDetail}
@@ -645,35 +719,70 @@ Finance/Key Detail: ${keyDetail}
 Tone: ${selectedTone}
 Length: ${selectedLength}s
 Extra Notes: ${extraNotes}
+${document.getElementById('variationsMode').checked ? '\n⚡ GENERATE 3 DISTINCT VARIATIONS - Different hooks, angles, and approaches for the same vehicle.' : ''}
+${document.getElementById('competitorMode').checked ? '\n🎯 COMPETITOR MODE - Compare this vehicle to similar options from Ford, Chevy, Honda. Highlight why Shottenkirk/Toyota wins.' : ''}
 
-Write a script that sounds exactly like Santi. Mention the data integrity of the vehicle. Reference the Quincy local angle if appropriate.`;
+Requirement: Write content that sounds exactly like Santi. Mention the data integrity of the vehicle. Reference the Quincy local angle if appropriate. ${contentType === 'outline' ? 'Provide a structured bulleted outline for the body.' : ''}`;
 
     try {
-      const response = await fetch(IS_OPENAI ? "https://api.openai.com/v1/chat/completions" : "https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(IS_OPENAI ? { "Authorization": `Bearer ${API_KEY}` } : { "x-api-key": API_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-calls": "true" })
-        },
-        body: JSON.stringify({
-          model: IS_OPENAI ? "gpt-4o" : "claude-3-5-sonnet-20240620",
-          messages: [{ role: "user", content: systemPrompt + "\n\n" + userPrompt }],
-          ...(IS_OPENAI ? {} : { max_tokens: 1000 })
-        })
-      });
+      let response, data, rawText;
+      const apiKey = KEYS[provider === 'gemini' ? 'GEMINI_API_KEY' : provider === 'openai' ? 'OPENAI_API_KEY' : 'ANTHROPIC_API_KEY'];
 
-      const data = await response.json();
-      const rawText = IS_OPENAI ? data.choices[0].message.content : data.content[0].text;
+      if (provider === 'gemini') {
+        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }]
+          })
+        });
+        data = await response.json();
+        rawText = data.candidates[0].content.parts[0].text;
+      } else if (provider === 'openai') {
+        response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: systemPrompt + "\n\n" + userPrompt }]
+          })
+        });
+        data = await response.json();
+        rawText = data.choices[0].message.content;
+      } else {
+        response = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-calls": "true"
+          },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 1500,
+            messages: [{ role: "user", content: systemPrompt + "\n\n" + userPrompt }]
+          })
+        });
+        data = await response.json();
+        rawText = data.content[0].text;
+      }
+
       const clean = rawText.replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(clean);
 
       renderScript(parsed, vehicle);
       scriptHistory.unshift({ label: parsed.title || vehicle.substring(0, 20), parsed, vehicle });
       if (scriptHistory.length > 5) scriptHistory.pop();
+      localStorage.setItem('richswhips_history', JSON.stringify(scriptHistory));
       updateHistory();
 
     } catch (err) {
-      document.getElementById('scriptOutput').innerHTML = `<div class="error-box">⚠️ Connection Failed. Ensure your API Key is set in settings.json.</div>`;
+      console.error(err);
+      document.getElementById('scriptOutput').innerHTML = `<div class="error-box">⚠️ Connection Failed. Ensure your API Key for ${providerNames[provider]} is set in settings.json.</div>`;
     } finally {
       btn.disabled = false;
       btn.textContent = '⚡ GENERATE SCRIPT';
@@ -689,7 +798,7 @@ Write a script that sounds exactly like Santi. Mention the data integrity of the
       { key: 'hashtags', icon: '#️⃣', label: 'TAGS', badgeClass: 'badge-hashtags', badgeText: 'VELOCITY' },
     ];
 
-    let fullScriptText = `RICH'S WHIPS — SANTI SCRIPT\n${'='.repeat(40)}\n\n`;
+    let fullScriptText = `RICH'S WHIPS — VELOCITY ENGINE\n${'='.repeat(40)}\n\n`;
     let html = '<div class="script-container">';
 
     for (const s of sections) {
@@ -702,7 +811,7 @@ Write a script that sounds exactly like Santi. Mention the data integrity of the
             <span class="section-name">${s.label}</span>
             <span class="section-badge ${s.badgeClass}">${s.badgeText}</span>
           </div>
-          <div class="script-section-body${s.key === 'hashtags' ? ' hashtags' : ''}">${escapeHtml(content)}</div>
+          <div class="script-section-body${s.key === 'hashtags' ? ' hashtags' : ''}">${escapeHtml(content).replace(/\n/g, '<br>')}</div>
         </div>`;
     }
 
@@ -710,7 +819,7 @@ Write a script that sounds exactly like Santi. Mention the data integrity of the
     lastFullScript = fullScriptText;
 
     document.getElementById('scriptOutput').innerHTML = html;
-    document.getElementById('outputTitle').textContent = parsed.title || `Script — ${vehicle}`;
+    document.getElementById('outputTitle').textContent = parsed.title || `Content — ${vehicle}`;
     document.getElementById('outputHeader').style.display = 'flex';
     document.getElementById('copyBtn').textContent = 'COPY ALL';
     document.getElementById('copyBtn').className = 'copy-btn';
@@ -754,8 +863,5 @@ Write a script that sounds exactly like Santi. Mention the data integrity of the
     }
   });
 </script>
-</body>
-</html>
-
 </body>
 </html>
